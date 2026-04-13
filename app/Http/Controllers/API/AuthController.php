@@ -65,6 +65,11 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
+        // Automatically login the user after a success registration
+        Auth::guard('web')->login($user);
+
+        $request->session()->regenerate();
+
         // TODO Email confirmation
 
         return response()->json([
