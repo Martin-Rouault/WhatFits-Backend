@@ -26,6 +26,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Identifiants invalides'], 401);
         }
 
+        // TODO
         // if (!$user->hasVerifiedEmail()) {
         //     return response()->json([
         //         'message' => 'Veuillez vérifier votre email afin de pouvoir vous connecter'
@@ -51,11 +52,11 @@ class AuthController extends Controller
         return response()->noContent();
     }
 
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'name' => 'required|string|max:128',
+            'email' => 'required|email|max:255|unique:users,email',
             'password' => ['required', Password::default()]
         ]);
 
@@ -65,12 +66,17 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
+        // TODO Email confirmation
+        // if (!$user->hasVerifiedEmail()) {
+        //     return response()->json([
+        //         'message' => 'Veuillez vérifier votre email afin de pouvoir vous connecter'
+        //     ], 403);
+        // }
+
         // Automatically login the user after a success registration
         Auth::guard('web')->login($user);
 
         $request->session()->regenerate();
-
-        // TODO Email confirmation
 
         return response()->json([
             'user' => $user,
