@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -26,12 +27,12 @@ class AuthController extends Controller
             return response()->json(['message' => 'Identifiants invalides'], 401);
         }
 
-        // TODO
-        // if (!$user->hasVerifiedEmail()) {
-        //     return response()->json([
-        //         'message' => 'Veuillez vérifier votre email afin de pouvoir vous connecter'
-        //     ], 403);
-        // }
+        // If the user has not verified his mail
+        if (!$user->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'Veuillez vérifier votre email afin de pouvoir vous connecter'
+            ], 403);
+        }
 
         Auth::guard('web')->login($user);
 
@@ -65,21 +66,12 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
-
-        // TODO Email confirmation
-        // if (!$user->hasVerifiedEmail()) {
-        //     return response()->json([
-        //         'message' => 'Veuillez vérifier votre email afin de pouvoir vous connecter'
-        //     ], 403);
-        // }
-
-        // Automatically login the user after a success registration
-        Auth::guard('web')->login($user);
-
-        $request->session()->regenerate();
+        
+        // Dispatch the registered event in order to send a verificaton email link to the user
+        event(new Registered($user));
 
         return response()->json([
-            'user' => $user,
+            'message' => 'Veuillez vérifier votre email',
         ], 201);
     }
 }
