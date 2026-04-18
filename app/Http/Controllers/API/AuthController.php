@@ -27,7 +27,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'Identifiants invalides'], 401);
         }
 
-        // If the user has not verified his mail
         if (!$user->hasVerifiedEmail()) {
             return response()->json([
                 'message' => 'Veuillez vérifier votre email afin de pouvoir vous connecter'
@@ -66,7 +65,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
-        
+
         // Dispatch the registered event in order to send a verificaton email link to the user
         event(new Registered($user));
 
