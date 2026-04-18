@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,9 +13,25 @@ class EmailVerificationController extends Controller
     /**
      * Verify the specified email
      */
-    public function verify(EmailVerificationRequest $request): JsonResponse
+    public function verify(Request $request): JsonResponse
     {
-        $request->fulfill();
+        if (!$request->hasValidSignature()) {
+            return response()->json(['message' => 'Erreur lors de la vérification'], 422);
+        }
+
+        $user =  User::findOrFail($request->id);
+
+        if (!hash_equals(sha1($user->getEmailForVerification()), $request->hash)) {
+            return response()->json(['message' => 'Erreur lors de la vérification'], 422);
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email déjà vérifié'], 400);
+        } else {
+            $user->markEmailAsVerified();
+
+            event(new Verified($user));
+        }
 
         return response()->json(['message' => 'Email vérifié avec succès'], 200);
     }

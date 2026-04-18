@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
             );
 
             return str_replace(
-                config('app.url'),
+                config('app.url') . '/api/v1',
                 config('app.frontend_url'),
                 $apiUrl
             );
