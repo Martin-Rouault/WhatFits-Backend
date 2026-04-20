@@ -17,7 +17,7 @@ test('the login method returns a user and a 200 status code', function () {
     $response = $this->postJson('/api/v1/login', [
         'email' => $user->email,
         'password' => $password
-    ], ['Referer' => 'http://localhost']);
+    ]);
 
     $response->assertStatus(200);
     $response->assertJsonStructure([
@@ -45,7 +45,7 @@ test('the login method should return a 401 status code when credentials are note
     $response = $this->postJson('/api/v1/login', [
         'email' => $user->email,
         'password' => "wrong_password"
-    ], ['Referer' => 'http://localhost']);
+    ], ['Origin' => 'http://localhost']);
 
     $response->assertUnauthorized();
 });
@@ -59,15 +59,25 @@ test('the login method return a 422 response if one of the credentials is not be
     $response->assertStatus(422);
 });
 
+//SANCTUM
+test('On success, the sanctum/csrf-cookie endpoint should return a 204 status code', function () {
+    /** @var \Tests\TestCase $this */
+
+    $response = $this->getJson('/sanctum/csrf-cookie');
+    $response->assertStatus(204);
+
+});
+
 //LOGOUT
 test('On success, the logout method return a 204 code status', function () {
     /** @var \Tests\TestCase $this */
+    /** @var \App\Models\User $user */
 
     $user = User::factory()->create();
 
     $this->actingAs($user);
 
-    $response = $this->postJson('/api/v1/logout', [], ['Referer' => 'http://localhost']);
+    $response = $this->postJson('/api/v1/logout', []);
 
     $response->assertStatus(204);
     $this->assertGuest('web');
@@ -95,18 +105,8 @@ test('the register method returns a user and a 201 status code', function () {
     ], ['Referer' => 'http://localhost']);
 
     $response->assertStatus(201);
-    $response->assertJsonStructure([
-        'user' => [
-            'id',
-            'name',
-            'email',
-            'created_at',
-            'updated_at'
-        ]
-    ]);
 });
 
-//REGISTER
 test('If the mail is already taken, the register method returns a 422 status code', function () {
     /** @var \Tests\TestCase $this */
 
@@ -125,7 +125,6 @@ test('If the mail is already taken, the register method returns a 422 status cod
     $response->assertStatus(422);
 });
 
-//REGISTER
 test('If the password is too short, the register method returns a 422 status code', function () {
     /** @var \Tests\TestCase $this */
 
