@@ -34,7 +34,7 @@ test('forgot password with unknown email also returns 200', function () {
 });
 
 // RESET PASSWORD
-test('reset password with valid token returns 200 and updates passowrd', function () {
+test('reset password with valid token returns 200 and updates password', function () {
 
     $user = User::factory()->create();
     $token = Password::createToken($user);
@@ -50,19 +50,46 @@ test('reset password with valid token returns 200 and updates passowrd', functio
     expect(Hash::check('TotoLastico24Tutu', $user->fresh()->password))->toBeTrue();
 });
 
-
-test('reset password with valid token returns 200 and updates passowrd', function () {
+test('reset password with a short password returns 422', function () {
 
     $user = User::factory()->create();
     $token = Password::createToken($user);
 
     $response = $this->postJson("/api/v1/reset-password/{$token}", [
         'email' => $user->email,
-        'password' => 'TotoLastico24Tutu',
-        'password_confirmation' => 'TotoLastico24Tutu',
+        'password' => 'TotoLastico24',
+        'password_confirmation' => 'TotoLastico24',
         'token' => $token
     ]);
 
-    $response->assertStatus(200);
-    expect(Hash::check('TotoLastico24Tutu', $user->fresh()->password))->toBeTrue();
+    $response->assertStatus(422);
+});
+
+test('reset password with a leak password returns 422', function () {
+
+    $user = User::factory()->create();
+    $token = Password::createToken($user);
+
+    $response = $this->postJson("/api/v1/reset-password/{$token}", [
+        'email' => $user->email,
+        'password' => 'NewPassword!123',
+        'password_confirmation' => 'NewPassword!123',
+        'token' => $token
+    ]);
+
+    $response->assertStatus(422);
+});
+
+test('reset password with a missing field in the request returns 422', function () {
+
+    $user = User::factory()->create();
+    $token = Password::createToken($user);
+
+    $response = $this->postJson("/api/v1/reset-password/{$token}", [
+        'email' => $user->email,
+        'password' => 'NewPassword!123',
+        'token' => $token
+    ]);
+
+    $response->assertStatus(422);
 });
