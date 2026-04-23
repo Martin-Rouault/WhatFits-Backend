@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Generation extends Model
 {
@@ -12,5 +13,10 @@ class Generation extends Model
     public function car_model(): BelongsTo
     {
         return $this->belongsTo(CarModel::class);
+    }
+
+    public function builds(): HasMany
+    {
+        return $this->hasMany(Build::class);
     }
 }
