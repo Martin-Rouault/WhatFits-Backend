@@ -7,13 +7,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+
 class Build extends Model
 {
-    protected $fillable = ['diameter', 'width'];
+    protected $fillable = ['car_model_id', 'wheel_id', 'car_year', 'diameter', 'width'];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function carModel(): BelongsTo
+    {
+        return $this->belongsTo(CarModel::class);
     }
 
     public function wheel(): BelongsTo

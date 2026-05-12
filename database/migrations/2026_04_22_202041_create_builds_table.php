@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('diameter');
             $table->decimal('width', 3, 1);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('generation_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('car_model_id')->constrained()->cascadeOnDelete();
             $table->foreignId('wheel_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
