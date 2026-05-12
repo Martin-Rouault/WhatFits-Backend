@@ -36,6 +36,7 @@ class MakeSeeder extends Seeder
             'Seat',
             'Volvo',
             'Polestar',
+            'Lexus',
         ];
 
         foreach ($makes as $make) {

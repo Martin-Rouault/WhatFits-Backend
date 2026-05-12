@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('builds', function (Blueprint $table) {
             $table->id();
+            $table->unsignedSmallInteger('car_year');
             $table->unsignedTinyInteger('diameter');
             $table->decimal('width', 3, 1);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();

@@ -16,11 +16,6 @@ class Build extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function generation(): BelongsTo
-    {
-        return $this->belongsTo(Generation::class);
-    }
-
     public function wheel(): BelongsTo
     {
         return $this->belongsTo(Wheel::class);
