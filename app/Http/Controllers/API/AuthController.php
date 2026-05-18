@@ -21,7 +21,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', '=', $request->email, 'and')->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Identifiants invalides'], 401);
@@ -56,7 +56,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:128',
-            'email' => 'required|email|max:255|unique:users,email',
+            'email' => 'required|email|max:255|unique:users,email', 
             'password' => ['required', Password::default()]
         ]);
 

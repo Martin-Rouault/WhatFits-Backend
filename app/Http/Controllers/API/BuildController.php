@@ -4,22 +4,26 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBuildRequest;
+use App\Http\Requests\UpdateBuildRequest;
+use App\Http\Resources\BuildResource;
 use App\Models\Build;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BuildController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        return Build::with(['carModel', 'wheel', 'user', 'photos', 'likes'])
-            ->when($request->filled('car_year'), fn($q) => $q->where('car_year', $request->input('car_year')))
-            ->when($request->filled('make_id'), fn($q) => $q->whereHas('carModel', fn($q2) => $q2->where('make_id', $request->input('make'))))
+        $builds = Build::with(['carModel.make', 'wheel.wheel_brand', 'user', 'photos', 'likes'])
             ->latest()
             ->paginate(15);
+
+        return BuildResource::collection($builds);
     }
 
     /**
@@ -27,9 +31,13 @@ class BuildController extends Controller
      */
     public function store(StoreBuildRequest $request)
     {
+        $this->authorize('create', Build::class);
+
         $build = $request->user()->builds()->create($request->validated());
 
-        return response()->json($build, 201);
+        $build->load('carModel.make', 'wheel.wheel_brand', 'user');
+
+        return new BuildResource($build);
     }
 
     /**
@@ -37,15 +45,25 @@ class BuildController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $build = Build::with(['carModel.make', 'wheel.wheel_brand', 'user', 'likes', 'photos'])->findOrFail($id);
+
+        return new BuildResource($build);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateBuildRequest $request, string $id)
     {
-        //
+        $build = Build::findOrFail($id);
+
+        $this->authorize('update', $build);
+
+        $build->update($request->validated());
+
+        $build->load('carModel.make', 'wheel.wheel_brand', 'user');
+
+        return new BuildResource($build);
     }
 
     /**
@@ -53,6 +71,12 @@ class BuildController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $build = Build::findOrFail($id);
+
+        $this->authorize('delete', $build);
+
+        $build->delete();
+
+        return response()->noContent();
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BuildController;
 use App\Http\Controllers\API\EmailVerificationController;
 use App\Http\Controllers\API\PasswordResetController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,8 +27,10 @@ Route::post('/email/verification-notification', [EmailVerificationController::cl
 Route::post('/forgot-password', [PasswordResetController::class, 'forgot'])->name('password.request');
 Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset'])->name('password.reset');
 
+Route::apiResource('users', UserController::class)->only(['show']);
+
 Route::apiResource('builds', BuildController::class)->only(['index', 'show']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('web', 'auth:sanctum')->group(function () {
     Route::apiResource('builds', BuildController::class)->only(['store', 'update', 'destroy']);
 });
