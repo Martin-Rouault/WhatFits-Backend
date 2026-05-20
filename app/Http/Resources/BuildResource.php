@@ -31,7 +31,7 @@ class BuildResource extends JsonResource
             'diameter'     => $this->diameter,
             'width'        => $this->width,
             'likes_count'  => $this->whenLoaded('likes', fn() => $this->likes->count()),
-            'liked'        => $this->whenLoaded('likes', fn() => $request->user()->id
+            'liked'        => $this->whenLoaded('likes', fn() => $request->user()?->id
                 ? $this->likes->contains('user_id', $request->user()->id)
                 : false),
             'photos'       => $this->whenLoaded('photos', fn() => $this->photos->map(fn($photo) => [
