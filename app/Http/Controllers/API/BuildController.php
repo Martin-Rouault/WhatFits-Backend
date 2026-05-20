@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+// TODO faire les tests
 class BuildController extends Controller
 {
     /**
@@ -19,6 +20,7 @@ class BuildController extends Controller
      */
     public function index()
     {
+        // TODO faire les filtres
         $builds = Build::with(['carModel.make', 'wheel.wheel_brand', 'user', 'photos', 'likes'])
             ->latest()
             ->paginate(15);

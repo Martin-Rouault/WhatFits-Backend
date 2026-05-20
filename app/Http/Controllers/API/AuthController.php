@@ -16,6 +16,9 @@ class AuthController extends Controller
 {
     public function login(Request $request): JsonResponse
     {
+        /**
+         * Login the requested user & checking if his email is verified.
+         */
         $request->validate([
             'email' => 'required|email|max:255',
             'password' => 'required'
@@ -42,6 +45,9 @@ class AuthController extends Controller
         ], 200);
     }
 
+    /**
+     * Logout the requested user & invalidate his session.
+     */
     public function logout(Request $request): Response
     {
         Auth::guard('web')->logout();
@@ -52,6 +58,9 @@ class AuthController extends Controller
         return response()->noContent();
     }
 
+    /**
+     * Register a new user & send a new registered event in order to verify his email.
+     */
     public function register(Request $request): JsonResponse
     {
         $request->validate([
@@ -66,7 +75,6 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
-        // Dispatch the registered event in order to send a verificaton email link to the user
         event(new Registered($user));
 
         return response()->json([

@@ -17,6 +17,7 @@ class UserPublicResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'builds' => BuildResource::collection($this->whenLoaded('builds'))
         ];
     }
 }

@@ -33,7 +33,7 @@ Assure-toi que les choix technologiques sont justifiés et cohérents avec les o
 Ton Professionnel, pédagogique et encourageant. Langage clair et technique sans jargon inexpliqué. Posture de mentor qui transmet son savoir-faire.
 
 # WheelBuilds — Trame complète du projet
-**Stack : Laravel + Sanctum SPA + SvelteKit + Cloudflare R2 + Laravel Cloud**
+**Stack : Laravel + Sanctum SPA + SvelteKit + Filament + Cloudflare R2 + Laravel Cloud**
 **Dernière mise à jour : 12 mai 2026**
 
 ---
@@ -137,6 +137,18 @@ Ton Professionnel, pédagogique et encourageant. Langage clair et technique sans
 - [ ] CI back — GitHub Actions (tests automatisés sur push)
 - [ ] Documentation API — commentaires PHPDoc sur les controllers
 - [ ] Changelog structuré (CHANGELOG.md)
+
+### Admin Panel (Filament)
+- [ ] `composer require filament/filament` — installation
+- [ ] `php artisan filament:install --panels` — setup panel
+- [ ] Créer admin user — `php artisan make:filament-user`
+- [ ] `UserResource` — liste/édition/suppression users
+- [ ] `BuildResource` — liste/édition/suppression builds + modération
+- [ ] `MakeResource` + `CarModelResource` — gestion catalogue voitures
+- [ ] `WheelBrandResource` + `WheelResource` — gestion catalogue jantes
+- [ ] Stats dashboard — nb users, nb builds, nb likes
+- [ ] Guard admin — middleware + role admin sur les users
+- [ ] Route `/admin` protégée (accès admin uniquement)
 
 ---
 
@@ -288,8 +300,3 @@ Ton Professionnel, pédagogique et encourageant. Langage clair et technique sans
 - [ ] Copie carte d'identité
 
 ---
-
-## CHECKLIST ADMINISTRATIVE
-- [ ] Mémoire envoyé à thomas@cloud-campus.fr
-- [ ] Mémoire envoyé à laetitia@cloud-campus.fr
-- [ ] Envoi 2 semaines avant la date de soutenance
