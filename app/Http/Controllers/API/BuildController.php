@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Filters\BuildFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBuildRequest;
 use App\Http\Requests\UpdateBuildRequest;
@@ -18,12 +19,12 @@ class BuildController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // TODO faire les filtres
-        $builds = Build::with(['carModel.make', 'wheel.wheel_brand', 'user', 'photos', 'likes'])
-            ->latest()
-            ->paginate(15);
+        $query = Build::with(['carModel.make', 'wheel.wheel_brand', 'user', 'photos', 'likes'])
+            ->latest();
+
+        $builds = (new BuildFilter($request))->apply($query)->paginate(15);
 
         return BuildResource::collection($builds);
     }
