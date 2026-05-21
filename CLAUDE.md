@@ -47,7 +47,7 @@ Ton Professionnel, pédagogique et encourageant. Langage clair et technique sans
 - [x] `wheel_brands` — marques de jantes
 - [x] `wheels` — modèles de jantes
 - [x] `users` — utilisateurs
-- [ ] `builds` — **à modifier : remplacer `generation_id` par `car_model_id` + ajouter `year`**
+- [x] `builds` — `car_model_id` + `car_year` (generation_id retiré)
 - [x] `build_photos` — photos des builds (colonne `display_order`)
 - [x] `likes` — likes des builds
 
