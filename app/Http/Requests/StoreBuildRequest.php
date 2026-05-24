@@ -24,10 +24,12 @@ class StoreBuildRequest extends FormRequest
     {
         return [
             'car_model_id' => ['required', 'integer', 'exists:car_models,id'],
-            'wheel_id' => ['required', 'integer', 'exists:wheels,id'],
-            'car_year' => ['required', 'integer', 'min:1900', 'max:' . date('Y') + 1],
-            'diameter' => ['required', 'integer', 'min:13', 'max:24'],
-            'width' => ['required', 'numeric', 'decimal:1', 'min:5.0', 'max:15.0']
+            'wheel_id'     => ['required', 'integer', 'exists:wheels,id'],
+            'car_year'     => ['required', 'integer', 'min:1900', 'max:' . date('Y') + 1],
+            'diameter'     => ['required', 'integer', 'min:13', 'max:24'],
+            'width'        => ['required', 'numeric', 'decimal:1', 'min:5.0', 'max:15.0'],
+            'photos'       => ['required', 'array', 'min:1', 'max:5'],
+            'photos.*'     => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048']
         ];
     }
 }

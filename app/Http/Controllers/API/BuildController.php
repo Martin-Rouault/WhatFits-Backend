@@ -8,14 +8,17 @@ use App\Http\Requests\StoreBuildRequest;
 use App\Http\Requests\UpdateBuildRequest;
 use App\Http\Resources\BuildResource;
 use App\Models\Build;
-use Illuminate\Http\JsonResponse;
+use App\Services\BuildPhotoService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+
 
 // TODO faire les tests
 class BuildController extends Controller
 {
+    public function __construct(
+        protected BuildPhotoService $photoService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -36,9 +39,13 @@ class BuildController extends Controller
     {
         $this->authorize('create', Build::class);
 
-        $build = $request->user()->builds()->create($request->validated());
+        $build = $request->user()->builds()->create($request->safe()->except('photos'));
 
-        $build->load('carModel.make', 'wheel.wheel_brand', 'user');
+        $photos = $request->file('photos', []);
+
+        $this->photoService->store($build, $photos);
+
+        $build->load('carModel.make', 'wheel.wheel_brand', 'user', 'photos');
 
         return new BuildResource($build);
     }
@@ -62,9 +69,11 @@ class BuildController extends Controller
 
         $this->authorize('update', $build);
 
-        $build->update($request->validated());
+        $build->update($request->safe()->except('add', 'delete', 'reorder'));
 
-        $build->load('carModel.make', 'wheel.wheel_brand', 'user');
+        $this->photoService->update($build, $request->validated());
+
+        $build->load('carModel.make', 'wheel.wheel_brand', 'user', 'photos');
 
         return new BuildResource($build);
     }
@@ -77,6 +86,8 @@ class BuildController extends Controller
         $build = Build::findOrFail($id);
 
         $this->authorize('delete', $build);
+
+        $this->photoService->delete($build);
 
         $build->delete();
 

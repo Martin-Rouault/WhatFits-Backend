@@ -24,10 +24,16 @@ class UpdateBuildRequest extends FormRequest
     {
         return [
             'car_model_id' => ['sometimes', 'integer', 'exists:car_models,id'],
-            'wheel_id' => ['sometimes', 'integer', 'exists:wheels,id'],
-            'car_year' => ['sometimes', 'integer', 'min:1900', 'max:' . date('Y') + 1],
-            'diameter' => ['sometimes', 'integer', 'min:13', 'max:24'],
-            'width' => ['sometimes', 'numeric', 'decimal:1', 'min:5.0', 'max:15.0']
+            'wheel_id'     => ['sometimes', 'integer', 'exists:wheels,id'],
+            'car_year'     => ['sometimes', 'integer', 'min:1900', 'max:' . date('Y') + 1],
+            'diameter'     => ['sometimes', 'integer', 'min:13', 'max:24'],
+            'width'        => ['sometimes', 'numeric', 'decimal:1', 'min:5.0', 'max:15.0'],
+            'delete'       => ['sometimes', 'array'],
+            'delete.*'     => ['integer', 'exists:build_photos,id'],
+            'add'          => ['sometimes', 'array', 'max:5'],
+            'add.*'        => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'reorder'      => ['sometimes', 'array', 'max:5'],
+            'reorder.*'    => ['integer', 'exists:build_photos,id'],
         ];
     }
 }

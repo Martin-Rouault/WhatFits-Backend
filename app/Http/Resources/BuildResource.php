@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class BuildResource extends JsonResource
 {
@@ -35,7 +36,7 @@ class BuildResource extends JsonResource
                 ? $this->likes->contains('user_id', $request->user()->id)
                 : false),
             'photos'       => $this->whenLoaded('photos', fn() => $this->photos->map(fn($photo) => [
-                'url'   => $photo->photo_url,
+                'url'   => Storage::disk('r2')->url($photo->photo_url),
                 'order' => $photo->display_order
             ])),
             'created_at'   => $this->created_at
