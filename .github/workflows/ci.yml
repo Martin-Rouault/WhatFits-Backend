@@ -1,4 +1,4 @@
-name: Tests
+name: Run tests
 
 on:
   push:
@@ -24,8 +24,10 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Copy .env
-        run: cp .env.example .env
+      - name: Prepare Laravel Application
+        run: |
+          cp .env.example .env
+          php artisan key:generate
 
       - name: Generate app key
         run: php artisan key:generate
