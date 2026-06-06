@@ -31,6 +31,6 @@ Route::middleware('web')->group(function () {
         Route::get('/me', [UserController::class, 'me']);
         Route::apiResource('users', UserController::class)->only(['update', 'destroy']);
         Route::apiResource('builds', BuildController::class)->only(['store', 'update', 'destroy']);
-        Route::post('/builds/{build}/like', [LikeController::class, 'toggle']);
+        Route::post('/builds/{build}/like', [LikeController::class, 'toggle'])->middleware('throttle:10,1');
     });
 });
