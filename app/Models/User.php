@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -13,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, CanResetPassword;
@@ -39,5 +41,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->email === env('ADMIN_EMAIL') && $this->hasVerifiedEmail();
     }
 }
