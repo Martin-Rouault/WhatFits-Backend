@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             MakeSeeder::class,
             WheelBrandSeeder::class,
             CarModelSeeder::class,
+            AdminUserSeeder::class,
+            BuildSeeder::class,
         ]);
     }
 }

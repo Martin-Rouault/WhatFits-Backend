@@ -17,7 +17,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user->with([
+        $user->load([
+            'builds.user',
             'builds.carModel.make',
             'builds.wheel.wheel_brand',
             'builds.photos',

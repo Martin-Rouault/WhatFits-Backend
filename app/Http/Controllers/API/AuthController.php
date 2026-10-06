@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         if (!$user->hasVerifiedEmail()) {
             return response()->json([
-                'message' => 'Veuillez vérifier votre email afin de pouvoir vous connecter'
+                'message' => 'Please verify your email before connecting.'
             ], 403);
         }
 
@@ -64,7 +64,7 @@ class AuthController extends Controller
     public function register(Request $request): JsonResponse
     {
         $request->validate([
-            'name' => 'required|string|max:128',
+            'name' => 'required|string|max:128|unique:users',
             'email' => 'required|email|max:255|unique:users,email', 
             'password' => ['required', Password::default()]
         ]);
@@ -78,7 +78,7 @@ class AuthController extends Controller
         event(new Registered($user));
 
         return response()->json([
-            'message' => 'Veuillez vérifier votre email',
+            'message' => 'Please verify your email. We will send you a link.',
         ], 201);
     }
 }

@@ -17,20 +17,17 @@ Route::post('/forgot-password', [PasswordResetController::class, 'forgot'])->nam
 Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset'])->name('password.reset');
 Route::apiResource('users', UserController::class)->only(['show']);
 
-Route::middleware('web')->group(function () {
-    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+Route::apiResource('builds', BuildController::class)->only(['index', 'show']);
+Route::get('/makes', [MakeController::class, 'index']);
+Route::get('/makes/{make}/car-models', [MakeController::class, 'carModels']);
+Route::get('/wheel-brands', [WheelBrandController::class, 'index']);
+Route::get('/wheel-brands/{wheelBrand}/wheels', [WheelBrandController::class, 'wheels']);
 
-    Route::apiResource('builds', BuildController::class)->only(['index', 'show']);
-    Route::get('/makes', [MakeController::class, 'index']);
-    Route::get('/makes/{make}/car-models', [MakeController::class, 'carModels']);
-    Route::get('/wheel-brands', [WheelBrandController::class, 'index']);
-    Route::get('/wheel-brands/{wheelBrand}/wheels', [WheelBrandController::class, 'wheels']);
-
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::get('/me', [UserController::class, 'me']);
-        Route::apiResource('users', UserController::class)->only(['update', 'destroy']);
-        Route::apiResource('builds', BuildController::class)->only(['store', 'update', 'destroy']);
-        Route::post('/builds/{build}/like', [LikeController::class, 'toggle'])->middleware('throttle:10,1');
-    });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [UserController::class, 'me']);
+    Route::apiResource('users', UserController::class)->only(['update', 'destroy']);
+    Route::apiResource('builds', BuildController::class)->only(['store', 'update', 'destroy']);
+    Route::post('/builds/{build}/like', [LikeController::class, 'toggle'])->middleware('throttle:10,1');
 });
